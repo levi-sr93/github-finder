@@ -1,20 +1,39 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 import './App.css';
 import Navbar from './components/layout/Navbar';
 import Users from './components/users/Users'
 
 
-const App = () => {
-  return (
-    <div className="App">
-      <Navbar title="Github finder" icon="fab fa-github" />
-      <div className="container">
-        <Users />
+class App extends Component {
+  state = {
+    users: [],
+    loading: false
+  }
 
+  async componentDidMount() {
+    this.setState({loading: true});
+    
+    const res = await axios.get('https://api.github.com/users');
+
+    this.setState({users: res.data, loading: false});
+    console.log(res.data)
+  }
+
+  render() {
+
+    return (
+      <div className="App">
+        <Navbar title="Github finder" icon="fab fa-github" />
+        <div className="container">
+          <Users loading={this.state.loading} users={this.state.users} />
+
+        </div>
       </div>
-    </div>
 
-  );
+    );
+  }
+
 }
 
 export default App;
